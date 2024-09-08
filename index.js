@@ -39,7 +39,6 @@ app.post('/api/shorturl', function(req, res) {
     return res.json({ error : "invalid url"});
 
   const urlInput = body.url;
-  console.log(urlInput);
 
   let domain;
 
@@ -50,10 +49,7 @@ app.post('/api/shorturl', function(req, res) {
     return res.json({ error: "invalid url" });
   }
 
-  console.log(domain);
-
   dns.lookup(domain, (err, address, family) => {
-    console.log(err);
     if (err)
       return res.json({ error : "invalid url"});
     
@@ -64,8 +60,6 @@ app.post('/api/shorturl', function(req, res) {
       originalUrl: urlInput, 
       hash: "a"
     });
-
-    console.log(url);
   
     url.save()
       .then((savedUrl) => {
@@ -86,20 +80,13 @@ app.get('/api/shorturl/:id', function(req, res) {
   if (id === undefined)
     return res.json({ error : "invalid url"});
 
-  console.log(id);
-
   URLDB.findById(id)
     .then((url) => {
-      if (!url) {
-        console.log('URL not found for ID:', id);
+      if (!url) 
         return res.json({ error: "invalid url" });
-      }
       
-      console.log('Redirecting to:', url.originalUrl);
-
-      if (typeof url.originalUrl !== 'string') {
+      if (typeof url.originalUrl !== 'string')
         return res.json({ error: "invalid url" });
-      }
 
       return res.redirect(url.originalUrl);
     })
